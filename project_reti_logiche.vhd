@@ -30,14 +30,16 @@ end project_reti_logiche;
 
 architecture FSM of project_reti_logiche is
     
-    type state_type is (IDLE, START, SET_ADDRESS, READ_FROM_MEM, CHECK_INDEX_COL, CHECK_INDEX_ROW, SET_NEXT, SET_WRITE, SET_SQUARE, SET_MSB, SET_LSB, SET_DONE, UNSET_DONE); 
+    type state_type is (IDLE, START, SET_ADDRESS, READ_FROM_MEM, CHECK_INDEX_COL, CHECK_INDEX_ROW, SET_NEXT, SET_SQUARE, SET_MSB, SET_LSB,SET_LSB_ADDRESS, SET_DONE, UNSET_DONE); 
     signal next_state, current_state : state_type;
     
     signal width, height, threshold : unsigned (7 downto 0);
     signal c_min, c_max, r_min, r_max : unsigned (7 downto 0);
     signal col_index, row_index : unsigned (7 downto 0);
-    signal max_address, square, addr_counter : unsigned (15 downto 0);
-    signal c_min_assigned, r_min_assigned : std_logic;
+    signal max_address, addr_counter : unsigned (15 downto 0);
+    signal square : std_logic_vector(15 downto 0);
+    signal c_min_assigned, r_min_assigned, bit_write : std_logic;
+    signal base, altezza : unsigned (7 downto 0);
 
 begin
 
@@ -54,11 +56,13 @@ begin
     begin
         case current_state is
             when IDLE => 
-                addr_counter <= (1 => '1', others => '0');
+                o_en <= '0';
+                addr_counter <= "0000000000000010";
                 c_min_assigned <= '0';
                 r_min_assigned <= '0';
-                col_index <= (others => '0');
-                row_index <= (others => '0');
+                bit_write <= '1';
+                col_index <= "00000000";
+                row_index <= "00000000";
                 next_state <= START;
             when START =>
                 if (i_start = '1') then
@@ -73,7 +77,7 @@ begin
                 next_state <= READ_FROM_MEM;
             when READ_FROM_MEM =>
                 if (addr_counter = "0000000000000010") then
-                    width <= unsigned(i_data);
+                    width <= unsigned(i_data) - 1;
                     addr_counter <= addr_counter + 1;
                     next_state <= SET_ADDRESS;
                 elsif (addr_counter = "0000000000000011") then
@@ -81,19 +85,22 @@ begin
                     addr_counter <= addr_counter + 1;
                     next_state <= SET_ADDRESS;
                 elsif (addr_counter = "0000000000000100") then
-                    max_address <= unsigned(width * height) + 4; 
+                    max_address <= unsigned(width * height) + 5; 
                     threshold <= unsigned(i_data);
                     addr_counter <= addr_counter + 1;
                     next_state <= SET_ADDRESS;
                 elsif (addr_counter = (max_address + 1)) then
-                    o_en <= '0';
-                    next_state <= SET_WRITE;
+                    o_en <= '1';
+                    o_we <= '1';
+                    base <= c_max - c_min +1;
+                    altezza <= r_max - r_min + 1;
+                    next_state <= SET_SQUARE;
                 else 
                 -- potrei aumentare addr_counter qui
                     next_state <= CHECK_INDEX_COL;
                 end if;
             when CHECK_INDEX_COL =>
-               if (i_data >= std_logic_vector(threshold)) then
+               if (unsigned(i_data) >= threshold) then
                    if (c_min_assigned = '0') then
                        c_min <= col_index;
                        c_max <= col_index;
@@ -133,7 +140,7 @@ begin
                 end if;
             when SET_NEXT =>
                 if (col_index = width) then
-                    col_index <= (others => '0');
+                    col_index <= "00000000";
                     row_index <= row_index + 1;
                     addr_counter <= addr_counter + 1;
                     next_state <= SET_ADDRESS;
@@ -142,22 +149,22 @@ begin
                     addr_counter <= addr_counter + 1;
                     next_state <= SET_ADDRESS;
                 end if;         
-            when SET_WRITE =>
-                o_en <= '1';
-                o_we <= '1';
-                next_state <= SET_SQUARE;
             when SET_SQUARE =>
-                square <= (c_max - c_min + 1) * (r_max - r_min + 1);    
-                o_address <= (0 => '1', others => '0');
+                square <= std_logic_vector(base * altezza);   
+                o_address <= "0000000000000001";
                 next_state <= SET_MSB;
             when SET_MSB =>
-                o_data <= std_logic_vector(square(15 downto 8));
-                o_address <= (others => '0');
-                next_state <= SET_LSB;
+                o_data <= square(15 downto 8);
+                next_state <= SET_LSB_ADDRESS;
+            when SET_LSB_ADDRESS =>
+                o_address <= "0000000000000000";
+                next_state <= SET_LSB; 
             when SET_LSB =>
-                o_data <= std_logic_vector(square(7 downto 0));
+                o_data <= square(7 downto 0);
                 next_state <= SET_DONE;
             when SET_DONE =>
+                o_en <= '0';
+                o_we <= '0';
                 o_done <= '1';
                 next_state <= UNSET_DONE;            
             when UNSET_DONE =>
