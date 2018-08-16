@@ -17,6 +17,7 @@ class script {
     }
 
 
+    //conversione binaria per 8 bit
     private String bin(int decimal) {
         String bin = Integer.toBinaryString(decimal);
         if (bin.length() == 8) {
@@ -38,6 +39,7 @@ class script {
         }
     }
 
+    // conversione binaria per 16 bit utile per l'area
     String binSquare(String bin) {
 
         if (bin.length() == 16) {
@@ -76,6 +78,7 @@ class script {
     }
 
 
+    //riempe la matrice con valori casuali
     void fillMatrix(String[] matrix) {
 
         matrix[0] = ZERO;
@@ -114,11 +117,13 @@ class script {
 
     List<Integer> minRectCalculator(String[] matrix) {
 
-        int length = Integer.parseInt(matrix[2],2)-1;
+        int width = Integer.parseInt(matrix[2],2)-1;
+        int height = Integer.parseInt(matrix[3],2);
         int xMin = 0;
         int xMax = 0;
         int yMin = 0;
         int yMax = 0;
+        int square = 0;
         boolean xFounded = false;
         boolean yFounded = false;
         int threshold = Integer.parseInt(matrix[4], 2);
@@ -153,7 +158,7 @@ class script {
                 }
             }
 
-            if (indexCol == length) {
+            if (indexCol == width) {
                 indexCol = 0;
                 indexRow++;
             }
@@ -163,7 +168,19 @@ class script {
 
         }
 
-        int square = (xMax - xMin + 1) * (yMax - yMin + 1);
+        int base = xMax - xMin + 1;
+        int altezza = yMax - yMin + 1;
+
+        if (width == 0 || height == 0) {
+            square = 0;
+        }
+        else if ((base == 1) && (altezza == 1) && !xFounded) {
+            square = 0;
+        }
+        else {
+            square = base * altezza;
+        }
+
 
         List<Integer> valori = new ArrayList<>();
         valori.add(square);
@@ -207,7 +224,7 @@ class script {
 
         File file = new File("./");
         System.out.println(file.getAbsolutePath());
-        String filePath = file.getAbsolutePath().replace(".", "src/com/me/testbench.vhd");
+        String filePath = file.getAbsolutePath().replace(".", "src/com/me/testbench1.vhd");
         File test = new File(filePath);
         test.createNewFile();
 
