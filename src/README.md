@@ -19,13 +19,13 @@ They have been created using a random generator and/or manually for board scenar
 
 ## Authors
 
-######<a href="https://github.com/adrianomundo"> Adriano Mundo </a>
-######<a href="https://github.com/dariomiceli3"> Dario Miceli </a>
+* <a href="https://github.com/adrianomundo"> Adriano Mundo </a>
+* <a href="https://github.com/dariomiceli3"> Dario Miceli </a>
 
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/adrianomundo/matrixFPGA/blob/master/src/LICENSE) file for details
 
 
 
