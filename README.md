@@ -25,7 +25,7 @@ They have been created using a random generator and/or manually for board scenar
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/adrianomundo/matrixFPGA/blob/master/src/LICENSE) file for details
+This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/adrianomundo/matrixFPGA/blob/master/LICENSE) file for details
 
 
 
