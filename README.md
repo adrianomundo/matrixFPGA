@@ -1,6 +1,6 @@
 # Digital Logic Design Project
 
-This project is done as a final assignment of the course Reti Logiche held in the fall semester A.Y. 2017/2018.
+This project is done as a final assignment of the course Reti Logiche held in the fall semester A.Y. 2017/2018 at Politecnico di Milano.
 Design documentation - see this [file](https://github.com/adrianomundo/matrixFPGA/blob/master/src/deliveries/10524163.pdf)
 
 ## Guidelines
