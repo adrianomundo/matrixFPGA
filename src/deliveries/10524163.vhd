@@ -1,11 +1,7 @@
 ----------------------------------------------------------------------------------
--- Engineer: Mundo-Miceli
--- 
--- Create Date: 28.07.2018 12:13:48
+-- Student: Mundo-Miceli
 -- Module Name: project_reti_logiche - Behavioral
 -- Project Name: project_reti_logiche
--- Revision 0.01 - File Created
--- 
 ----------------------------------------------------------------------------------
 
 library ieee;
